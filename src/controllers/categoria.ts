@@ -149,7 +149,7 @@ export class CategoriaController {
     const { connection, db } = await getDatabase()
 
     try {
-      await db.delete(categoria).execute()
+      await db.delete(categoria).where(eq(categoria.id, idInt)).execute()
     } catch (err) {
       res.status(500).json({
         message: "Erro interno do servidor"
