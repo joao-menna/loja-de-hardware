@@ -1,6 +1,6 @@
-import { Request, Response } from "express"
 import getDatabase from "../functions/getDatabase"
 import { categoria } from "../schemas/categoria"
+import { Request, Response } from "express"
 import { eq } from "drizzle-orm"
 
 export class CategoriaController {

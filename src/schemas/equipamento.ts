@@ -1,6 +1,6 @@
-import { mysqlTable, serial, varchar } from "drizzle-orm/mysql-core"
+import { int, mysqlTable, varchar } from "drizzle-orm/mysql-core"
 
 export const equipamento = mysqlTable("equipamento", {
-  id: serial("id_equipamento").primaryKey().autoincrement(),
+  id: int("id_equipamento").primaryKey().autoincrement(),
   nome: varchar("nome_equipamento", { length: 100 })
 })
