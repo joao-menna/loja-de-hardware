@@ -1,9 +1,6 @@
 import { NextFunction, Request, Response } from "express"
+import { JwtInterface } from "../interfaces/jwt"
 import { verify } from "jsonwebtoken"
-
-interface JwtInterface {
-  authorized: boolean
-}
 
 export default function jwtMiddleware(req: Request, res: Response, next: NextFunction) {
   const { authorization } = req.headers
