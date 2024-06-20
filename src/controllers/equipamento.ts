@@ -4,6 +4,7 @@ import { equipamento } from "../schemas/equipamento"
 import { eq } from "drizzle-orm"
 import { componente } from "../schemas/componente"
 import { equipamentoComponente } from "../schemas/equipamentoComponente"
+import { categoria } from "../schemas/categoria"
 
 export class EquipamentoController {
   async getAll(req: Request, res: Response) {
@@ -115,11 +116,61 @@ export class EquipamentoController {
       return
     }
 
+    if (componentes.length < 2) {
+      res.status(400).json({
+        message: "Deve haver pelo menos 2 componentes num equipamento"
+      })
+      return
+    }
+
     const { connection, db } = await getDatabase()
 
+    const componentesInserir = componentes.map((val) => ({
+      componenteId: val,
+      equipamentoId: idInt
+    }))
+
     try {
-      await db.delete(equipamentoComponente).where(eq(equipamentoComponente.equipamentoId, idInt)).execute()
+      let temProcessamento = false
+      let temArmazenamento = false
+
+      for (const componenteId of componentes) {
+        const meusComponentes = await db
+          .select()
+          .from(componente)
+          .innerJoin(categoria, eq(categoria.id, componente.categoriaId))
+          .where(eq(componente.id, componenteId))
+
+        if (meusComponentes.length === 0) {
+          res.status(400).json({
+            message: `Nao existe componente para o id ${componenteId}`
+          })
+          return
+        }
+
+        const meuComponente = meusComponentes[0]
+
+        if (meuComponente.categoria.nome === "processamento") {
+          temProcessamento = true
+        }
+
+        if (meuComponente.categoria.nome === "armazenamento") {
+          temArmazenamento = true
+        }
+      }
+
+      if (!temProcessamento || !temArmazenamento) {
+        res.status(400).json({
+          message: "O equipamento deve conter pelo menos um componente de armazenamento e um de processamento"
+        })
+        return
+      }
+
+      await db.delete(equipamentoComponente)
+        .where(eq(equipamentoComponente.equipamentoId, idInt))
+        .execute()
       await db.update(equipamento).set({ nome }).where(eq(equipamento.id, idInt)).execute()
+      await db.insert(equipamentoComponente).values(componentesInserir).execute()
     } catch (err) {
       res.status(500).json({
         message: "Erro interno do servidor"
@@ -134,7 +185,8 @@ export class EquipamentoController {
 
     res.json({
       id: idInt,
-      nome
+      nome,
+      componentes
     })
   }
 
@@ -152,6 +204,10 @@ export class EquipamentoController {
     const { connection, db } = await getDatabase()
 
     try {
+      await db
+        .delete(equipamentoComponente)
+        .where(eq(equipamentoComponente.equipamentoId, idInt))
+        .execute()
       await db.delete(equipamento).where(eq(equipamento.id, idInt)).execute()
     } catch (err) {
       res.status(500).json({

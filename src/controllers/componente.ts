@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import getDatabase from "../functions/getDatabase"
 import { componente } from "../schemas/componente"
 import { eq } from "drizzle-orm"
+import { equipamentoComponente } from "../schemas/equipamentoComponente"
 
 export class ComponenteController {
   async getAll(req: Request, res: Response) {
@@ -59,9 +60,14 @@ export class ComponenteController {
   }
 
   async insertOne(req: Request, res: Response) {
-    const { nome } = req.body
+    const { categoriaId, nome } = req.body as { categoriaId: number, nome: string }
 
-    if (!nome) {
+    if (
+      !nome ||
+      typeof nome !== "string" ||
+      !categoriaId ||
+      typeof categoriaId !== "number"
+    ) {
       res.status(422).json({
         message: "Body inválido"
       })
@@ -73,7 +79,7 @@ export class ComponenteController {
     let componenteId
 
     try {
-      const componenteInserido = await db.insert(componente).values({ nome }).execute()
+      const componenteInserido = await db.insert(componente).values({ categoriaId, nome }).execute()
       componenteId = componenteInserido[0].insertId
     } catch (err) {
       res.status(500).json({
@@ -149,6 +155,10 @@ export class ComponenteController {
     const { connection, db } = await getDatabase()
 
     try {
+      await db
+        .delete(equipamentoComponente)
+        .where(eq(equipamentoComponente.componenteId, idInt))
+        .execute()
       await db.delete(componente).where(eq(componente.id, idInt)).execute()
     } catch (err) {
       res.status(500).json({
