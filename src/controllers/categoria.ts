@@ -1,6 +1,6 @@
-import { Request, Response } from "express"
 import getDatabase from "../functions/getDatabase"
 import { categoria } from "../schemas/categoria"
+import { Request, Response } from "express"
 import { eq } from "drizzle-orm"
 
 export class CategoriaController {
@@ -149,7 +149,7 @@ export class CategoriaController {
     const { connection, db } = await getDatabase()
 
     try {
-      await db.delete(categoria).execute()
+      await db.delete(categoria).where(eq(categoria.id, idInt)).execute()
     } catch (err) {
       res.status(500).json({
         message: "Erro interno do servidor"

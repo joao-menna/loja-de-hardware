@@ -6,7 +6,9 @@
   "description": "Loja de hardware, N3 do Camargo",
   "scripts": {
     "dev": "nodemon src/main.ts",
-    "start": "ts-node src/main.ts"
+    "start": "ts-node src/main.ts",
+    "migrate": "drizzle-kit migrate",
+    "generate": "drizzle-kit generate"
   },
   "dependencies": {
     "@types/cors": "^2.8.17",

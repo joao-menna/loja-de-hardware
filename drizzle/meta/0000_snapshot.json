@@ -1,0 +1,199 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "id": "a5873585-6253-4a5e-8001-efe8957c9c06",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "categoria": {
+      "name": "categoria",
+      "columns": {
+        "id_categoria": {
+          "name": "id_categoria",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nome_categoria": {
+          "name": "nome_categoria",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "categoria_id_categoria": {
+          "name": "categoria_id_categoria",
+          "columns": [
+            "id_categoria"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "componente": {
+      "name": "componente",
+      "columns": {
+        "codigo_componente": {
+          "name": "codigo_componente",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nome_componente": {
+          "name": "nome_componente",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "desc_componente": {
+          "name": "desc_componente",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "categoria_id": {
+          "name": "categoria_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "componente_categoria_id_categoria_id_categoria_fk": {
+          "name": "componente_categoria_id_categoria_id_categoria_fk",
+          "tableFrom": "componente",
+          "tableTo": "categoria",
+          "columnsFrom": [
+            "categoria_id"
+          ],
+          "columnsTo": [
+            "id_categoria"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "componente_codigo_componente": {
+          "name": "componente_codigo_componente",
+          "columns": [
+            "codigo_componente"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "equipamento": {
+      "name": "equipamento",
+      "columns": {
+        "id_equipamento": {
+          "name": "id_equipamento",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nome_equipamento": {
+          "name": "nome_equipamento",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "equipamento_id_equipamento": {
+          "name": "equipamento_id_equipamento",
+          "columns": [
+            "id_equipamento"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "equipamento_componente": {
+      "name": "equipamento_componente",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "equipamento_id": {
+          "name": "equipamento_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "componente_id": {
+          "name": "componente_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "equipamento_componente_equipamento_id_equipamento_fk": {
+          "name": "equipamento_componente_equipamento_id_equipamento_fk",
+          "tableFrom": "equipamento_componente",
+          "tableTo": "equipamento",
+          "columnsFrom": [
+            "equipamento_id"
+          ],
+          "columnsTo": [
+            "id_equipamento"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "equipamento_componente_componente_id_componente_fk": {
+          "name": "equipamento_componente_componente_id_componente_fk",
+          "tableFrom": "equipamento_componente",
+          "tableTo": "componente",
+          "columnsFrom": [
+            "componente_id"
+          ],
+          "columnsTo": [
+            "codigo_componente"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "equipamento_componente_id": {
+          "name": "equipamento_componente_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    }
+  },
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {},
+    "indexes": {}
+  }
+}
