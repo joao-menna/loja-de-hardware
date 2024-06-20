@@ -1,0 +1,15 @@
+meta {
+  name: getAll
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/categoria
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: {{token}}
+}
