@@ -10,3 +10,4 @@ loadRoutes(server)
 
 server.listen(8080)
 
+console.log("Servidor ouvindo na porta 8080")

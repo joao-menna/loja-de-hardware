@@ -2,6 +2,7 @@ import getDatabase from "../functions/getDatabase"
 import { categoria } from "../schemas/categoria"
 import { Request, Response } from "express"
 import { eq } from "drizzle-orm"
+import { componente } from "../schemas/componente"
 
 export class CategoriaController {
   async getAll(req: Request, res: Response) {
@@ -165,5 +166,58 @@ export class CategoriaController {
     res.json({
       id: idInt
     })
+  }
+
+  async getOneWithComponente(req: Request, res: Response) {
+    const { id } = req.params
+
+    const idInt = parseInt(id)
+    if (isNaN(idInt)) {
+      res.status(400).json({
+        message: "ID inválido na rota"
+      })
+      return
+    }
+
+    const { connection, db } = await getDatabase()
+
+    let categorias
+    let componentes
+
+    try {
+      categorias = await db
+        .select()
+        .from(categoria)
+        .where(eq(categoria.id, idInt))
+        .execute()
+
+      componentes = await db
+        .select({
+          id: componente.id,
+          nome: componente.nome,
+          descricao: componente.descricao
+        })
+        .from(componente)
+        .where(eq(componente.categoriaId, idInt))
+        .execute()
+    } catch (err) {
+      res.status(500).json({
+        message: "Erro interno do servidor"
+      })
+
+      connection.end()
+    
+      return
+    }
+
+    connection.end()
+
+    const retorno = {
+      id: categorias[0].id,
+      nome: categorias[0].nome,
+      componentes
+    }
+
+    res.json(retorno)
   }
 }

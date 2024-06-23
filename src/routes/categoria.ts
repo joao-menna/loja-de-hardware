@@ -27,4 +27,9 @@ export default function categoriaRoutes(express: Application) {
     const categoriaController = new CategoriaController()
     categoriaController.deleteOne(req, res)
   })
+
+  express.get("/categoria/:id/componente", jwtMiddleware, (req, res) => {
+    const categoriaController = new CategoriaController()
+    categoriaController.getOneWithComponente(req, res)
+  })
 }

@@ -225,4 +225,56 @@ export class EquipamentoController {
       id: idInt
     })
   }
+
+  async getOneWithComponente(req: Request, res: Response) {
+    const { id } = req.params
+
+    const idInt = parseInt(id)
+    if (isNaN(idInt)) {
+      res.status(400).json({
+        message: "ID inválido na rota"
+      })
+      return
+    }
+
+    const { connection, db } = await getDatabase()
+
+    let equipamentos
+
+    try {
+      equipamentos = await db
+        .select()
+        .from(equipamento)
+        .innerJoin(equipamentoComponente, eq(equipamentoComponente.equipamentoId, equipamento.id))
+        .innerJoin(componente, eq(componente.id, equipamentoComponente.componenteId))
+        .where(eq(equipamento.id, idInt))
+    } catch (err) {
+      res.status(500).json({
+        message: "Erro interno do servidor"
+      })
+
+      connection.end()
+    
+      return
+    }
+
+    connection.end()
+
+    const retorno: { id: number, nome: string | null, componentes: any[] } = {
+      id: equipamentos[0].equipamento.id,
+      nome: equipamentos[0].equipamento.nome,
+      componentes: []
+    }
+
+    for (const component of equipamentos) {
+      retorno.componentes.push({
+        id: component.componente.id,
+        nome: component.componente.nome,
+        descricao: component.componente.descricao,
+        categoriaId: component.componente.categoriaId
+      })
+    }
+
+    res.json(retorno)
+  }
 }

@@ -27,4 +27,9 @@ export default function equipamentoRoutes(express: Application) {
     const equipamentoController = new EquipamentoController()
     equipamentoController.deleteOne(req, res)
   })
+
+  express.get("/equipamento/:id/componente", jwtMiddleware, (req, res) => {
+    const equipamentoController = new EquipamentoController()
+    equipamentoController.getOneWithComponente(req, res)
+  })
 }

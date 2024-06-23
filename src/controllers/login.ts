@@ -17,7 +17,7 @@ export class LoginController {
       return
     }
 
-    if (username !== process.env.USERNAME || password !== process.env.PASSWORD) {
+    if (username !== process.env.LOGIN_USER || password !== process.env.LOGIN_PASS) {
       res.status(401).json({
         message: "Usuário ou senha inválido"
       })
