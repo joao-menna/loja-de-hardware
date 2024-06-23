@@ -1,0 +1,25 @@
+meta {
+  name: updateOne
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{base_url}}/equipamento/2
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+    "nome": "pc do claudio",
+    "componentes": [
+      1,
+      2
+    ]
+  }
+}

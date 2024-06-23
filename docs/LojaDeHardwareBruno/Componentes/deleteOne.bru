@@ -1,0 +1,23 @@
+meta {
+  name: deleteOne
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/componente/1
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+    "categoriaId": 2,
+    "nome": "Processador i9",
+    "descricao": "processador muito bom"
+  }
+}

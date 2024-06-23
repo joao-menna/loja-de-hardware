@@ -62,11 +62,18 @@ export class EquipamentoController {
   }
 
   async insertOne(req: Request, res: Response) {
-    const { nome } = req.body
+    const { nome, componentes } = req.body
 
-    if (!nome) {
+    if (!nome || !Array.isArray(componentes)) {
       res.status(422).json({
         message: "Body inválido"
+      })
+      return
+    }
+
+    if (componentes.length < 2) {
+      res.status(400).json({
+        message: "Deve haver pelo menos 2 componentes num equipamento"
       })
       return
     }
@@ -76,8 +83,50 @@ export class EquipamentoController {
     let equipamentoId
 
     try {
+      let temProcessamento = false
+      let temArmazenamento = false
+
+      for (const componenteId of componentes) {
+        const meusComponentes = await db
+          .select()
+          .from(componente)
+          .innerJoin(categoria, eq(categoria.id, componente.categoriaId))
+          .where(eq(componente.id, componenteId))
+
+        if (meusComponentes.length === 0) {
+          res.status(400).json({
+            message: `Nao existe componente para o id ${componenteId}`
+          })
+          return
+        }
+
+        const meuComponente = meusComponentes[0]
+
+        if (meuComponente.categoria.nome?.toLowerCase() === "processamento") {
+          temProcessamento = true
+        }
+
+        if (meuComponente.categoria.nome?.toLowerCase() === "armazenamento") {
+          temArmazenamento = true
+        }
+      }
+
+      if (!temProcessamento || !temArmazenamento) {
+        res.status(400).json({
+          message: "O equipamento deve conter pelo menos um componente de armazenamento e um de processamento"
+        })
+        return
+      }
+
       const equipamentoInserido = await db.insert(equipamento).values({ nome }).execute()
       equipamentoId = equipamentoInserido[0].insertId
+
+      const componentesInserir = componentes.map((val) => ({
+        componenteId: val,
+        equipamentoId: equipamentoInserido[0].insertId
+      }))
+
+      await db.insert(equipamentoComponente).values(componentesInserir).execute()
     } catch (err) {
       res.status(500).json({
         message: "Erro interno do servidor"
@@ -150,11 +199,11 @@ export class EquipamentoController {
 
         const meuComponente = meusComponentes[0]
 
-        if (meuComponente.categoria.nome === "processamento") {
+        if (meuComponente.categoria.nome?.toLowerCase() === "processamento") {
           temProcessamento = true
         }
 
-        if (meuComponente.categoria.nome === "armazenamento") {
+        if (meuComponente.categoria.nome?.toLowerCase() === "armazenamento") {
           temArmazenamento = true
         }
       }

@@ -1,0 +1,15 @@
+meta {
+  name: deleteOne
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{base_url}}/equipamento/2
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: {{token}}
+}

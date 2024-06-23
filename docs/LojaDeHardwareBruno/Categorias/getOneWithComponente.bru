@@ -1,0 +1,15 @@
+meta {
+  name: getOneWithComponente
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/categoria/1/componente
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: {{token}}
+}

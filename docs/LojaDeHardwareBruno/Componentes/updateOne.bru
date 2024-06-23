@@ -1,0 +1,23 @@
+meta {
+  name: updateOne
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/componente/2
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+    "categoriaId": 2,
+    "nome": "Processador i9",
+    "descricao": "processador muito bom"
+  }
+}

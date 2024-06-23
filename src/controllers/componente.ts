@@ -60,11 +60,17 @@ export class ComponenteController {
   }
 
   async insertOne(req: Request, res: Response) {
-    const { categoriaId, nome } = req.body as { categoriaId: number, nome: string }
+    const {
+      categoriaId,
+      nome,
+      descricao
+    } = req.body as { categoriaId: number, nome: string, descricao: string }
 
     if (
       !nome ||
       typeof nome !== "string" ||
+      !descricao ||
+      typeof descricao !== "string" ||
       !categoriaId ||
       typeof categoriaId !== "number"
     ) {
@@ -79,7 +85,11 @@ export class ComponenteController {
     let componenteId
 
     try {
-      const componenteInserido = await db.insert(componente).values({ categoriaId, nome }).execute()
+      const componenteInserido = await db
+        .insert(componente)
+        .values({ categoriaId, descricao, nome })
+        .execute()
+
       componenteId = componenteInserido[0].insertId
     } catch (err) {
       res.status(500).json({
@@ -95,7 +105,9 @@ export class ComponenteController {
 
     res.json({
       id: componenteId,
-      nome
+      nome,
+      descricao,
+      categoriaId
     })
   }
 
@@ -110,9 +122,9 @@ export class ComponenteController {
       return
     }
 
-    const { nome } = req.body
+    const { categoriaId, nome, descricao } = req.body
 
-    if (!nome) {
+    if (!nome || !descricao || categoriaId <= 0) {
       res.status(422).json({
         message: "Body inválido"
       })
@@ -122,7 +134,7 @@ export class ComponenteController {
     const { connection, db } = await getDatabase()
 
     try {
-      await db.update(componente).set({ nome }).where(eq(componente.id, idInt)).execute()
+      await db.update(componente).set({ nome, descricao, categoriaId }).where(eq(componente.id, idInt)).execute()
     } catch (err) {
       res.status(500).json({
         message: "Erro interno do servidor"

@@ -1,0 +1,21 @@
+meta {
+  name: insertOne
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/categoria
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+    "nome": "Armazenamento - Processamento"
+  }
+}

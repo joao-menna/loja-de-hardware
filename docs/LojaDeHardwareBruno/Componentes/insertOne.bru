@@ -1,0 +1,23 @@
+meta {
+  name: insertOne
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/componente
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+    "categoriaId": 1,
+    "nome": "HD / Processador",
+    "descricao": ""
+  }
+}
