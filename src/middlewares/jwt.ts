@@ -13,7 +13,15 @@ export default function jwtMiddleware(req: Request, res: Response, next: NextFun
     return
   }
 
-  const decoded = verify(authorization, jwtKey) as JwtInterface
+  let decoded
+  try {
+    decoded = verify(authorization, jwtKey) as JwtInterface
+  } catch (err) {
+    res.status(401).json({
+      message: "JWT mal formado"
+    })
+    return
+  }
 
   if (!decoded.authorized) {
     res.status(401).json({

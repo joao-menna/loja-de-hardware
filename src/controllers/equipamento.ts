@@ -309,6 +309,13 @@ export class EquipamentoController {
 
     connection.end()
 
+    if (equipamentos.length === 0) {
+      res.status(404).json({
+        message: "Entidade não encontrada"
+      })
+      return
+    }
+
     const retorno: { id: number, nome: string | null, componentes: any[] } = {
       id: equipamentos[0].equipamento.id,
       nome: equipamentos[0].equipamento.nome,
